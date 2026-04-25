@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayoub AIT ABDELAALI — Réseau &amp; Cybersécurité</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#060810;--bg2:#090c1a;--surface:#0e1228;--border:#1b2647;--accent:#4fc3f7;--green:#69ff8a;--orange:#ffab40;--text:#c5d5f0;--muted:#4a5a80;--white:#eef4ff;--mono:'Space Mono',monospace;--display:'Syne',sans-serif;--body:'IBM Plex Sans',sans-serif;--ease:cubic-bezier(.25,.46,.45,.94)}
+        html{scroll-behavior:smooth}
+        body{font-family:var(--body);background:var(--bg);color:var(--text);overflow-x:hidden;cursor:none}
+        .cursor{position:fixed;width:10px;height:10px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:screen;transition:width .2s,height .2s}
+        .cursor-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(79,195,247,.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s}
+        body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.05) 2px,rgba(0,0,0,.05) 4px);pointer-events:none;z-index:9000}
+        body::after{content:'';position:fixed;inset:-200%;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:8999;opacity:.4;animation:grain .5s steps(1) infinite}
+        @keyframes grain{0%,100%{transform:translate(0,0)}10%{transform:translate(-3%,-4%)}20%{transform:translate(3%,2%)}30%{transform:translate(-2%,5%)}40%{transform:translate(5%,-1%)}50%{transform:translate(-4%,3%)}60%{transform:translate(2%,-5%)}70%{transform:translate(-5%,1%)}80%{transform:translate(4%,4%)}90%{transform:translate(-1%,-3%)}}
+
+        /* NAV */
+        nav{position:fixed;top:0;left:0;right:0;z-index:800;display:flex;justify-content:space-between;align-items:center;padding:20px 60px;transition:border-color .3s,background .3s}
+        nav.scrolled{background:rgba(6,8,16,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+        .nav-logo{font-family:var(--mono);font-size:.85rem;color:var(--accent);text-decoration:none;letter-spacing:.1em}
+        .nav-logo span{color:var(--muted)}
+        .nav-links{display:flex;gap:36px;list-style:none}
+        .nav-links a{font-family:var(--mono);font-size:.72rem;color:var(--muted);text-decoration:none;letter-spacing:.1em;text-transform:uppercase;transition:color .2s;position:relative}
+        .nav-links a::before{content:'> ';color:var(--accent);opacity:0;transition:opacity .2s}
+        .nav-links a:hover{color:var(--white)}
+        .nav-links a:hover::before{opacity:1}
+        .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer}
+        .hamburger span{display:block;width:24px;height:2px;background:var(--accent);transition:.3s}
+
+        /* HERO */
+        #home{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:0 60px}
+        .grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(79,195,247,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(79,195,247,.035) 1px,transparent 1px);background-size:60px 60px;animation:gridMove 25s linear infinite}
+        @keyframes gridMove{from{transform:translateY(0)}to{transform:translateY(60px)}}
+        .hero-glow{position:absolute;width:800px;height:800px;background:radial-gradient(ellipse at center,rgba(79,195,247,.06) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+        .bracket{position:absolute;width:80px;height:80px}
+        .bracket-tl{top:100px;left:60px;border-top:1px solid var(--border);border-left:1px solid var(--border)}
+        .bracket-br{bottom:60px;right:60px;border-bottom:1px solid var(--border);border-right:1px solid var(--border)}
+        .hero-inner{position:relative;z-index:2;max-width:1100px;margin:0 auto;width:100%;padding-top:110px;display:grid;grid-template-columns:1fr 400px;gap:60px;align-items:center}
+        .hero-label{font-family:var(--mono);font-size:.72rem;color:var(--accent);letter-spacing:.28em;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:12px}
+        .hero-label::before{content:'';display:block;width:40px;height:1px;background:var(--accent)}
+        .hero-name{font-family:var(--display);font-size:clamp(2.6rem,6vw,5.2rem);font-weight:800;line-height:1.02;color:var(--white);margin-bottom:6px}
+        .hero-name .outline{color:transparent;-webkit-text-stroke:1.5px var(--accent);display:block}
+        .hero-role{font-family:var(--mono);font-size:clamp(.82rem,1.6vw,.97rem);color:var(--muted);margin-bottom:26px}
+        .typing-text{border-right:2px solid var(--accent);padding-right:3px;animation:blink .7s step-end infinite}
+        @keyframes blink{50%{border-color:transparent}}
+        .hero-bio{font-size:.95rem;color:var(--text);line-height:1.78;margin-bottom:34px;font-weight:300;max-width:480px}
+        .hero-bio strong{color:var(--white);font-weight:500}
+        .hero-actions{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+        .btn-primary{font-family:var(--mono);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;padding:14px 30px;background:var(--accent);color:var(--bg);text-decoration:none;font-weight:700;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));transition:background .2s;display:inline-block}
+        .btn-primary:hover{background:var(--green)}
+        .btn-ghost{font-family:var(--mono);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;padding:13px 28px;border:1px solid var(--border);color:var(--text);text-decoration:none;transition:border-color .2s,color .2s;display:inline-flex;align-items:center;gap:8px}
+        .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+        .hero-card{background:var(--surface);border:1px solid var(--border);padding:28px;position:relative;overflow:hidden}
+        .hero-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--green))}
+        .card-label{font-family:var(--mono);font-size:.65rem;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-bottom:16px}
+        .card-status{display:flex;align-items:center;gap:8px;margin-bottom:22px}
+        .status-dot{width:8px;height:8px;background:var(--green);border-radius:50%;box-shadow:0 0 8px var(--green);animation:pulse 2s ease-in-out infinite}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+        .status-text{font-family:var(--mono);font-size:.78rem;color:var(--green)}
+        .card-info{display:grid;gap:11px}
+        .card-row{display:flex;justify-content:space-between;align-items:center;padding-bottom:9px;border-bottom:1px solid var(--border)}
+        .card-row:last-child{border:none;padding:0}
+        .card-key{font-family:var(--mono);font-size:.63rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+        .card-val{font-family:var(--mono);font-size:.72rem;color:var(--text)}
+        .card-val.accent{color:var(--accent)}
+        .card-val.orange{color:var(--orange)}
+        .scroll-hint{position:absolute;bottom:32px;left:60px;display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:.65rem;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;z-index:2}
+        .scroll-line{width:40px;height:1px;background:var(--muted);position:relative;overflow:hidden}
+        .scroll-line::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:var(--accent);animation:sa 2s ease-in-out infinite}
+        @keyframes sa{0%{left:-100%}50%{left:100%}100%{left:100%}}
+
+        /* SECTIONS */
+        section{padding:120px 60px}
+        .section-header{display:flex;align-items:center;gap:20px;margin-bottom:72px}
+        .section-num{font-family:var(--mono);font-size:.72rem;color:var(--accent);letter-spacing:.22em}
+        .section-title{font-family:var(--display);font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;color:var(--white)}
+        .section-line{flex:1;height:1px;background:var(--border)}
+
+        /* ABOUT */
+        #about{background:var(--bg2)}
+        .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+        .about-text p{font-size:.95rem;color:var(--text);line-height:1.8;margin-bottom:16px;font-weight:300}
+        .about-text p strong{color:var(--white);font-weight:500}
+        .about-cv-btn{margin-top:28px;display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:.72rem;color:var(--accent);text-decoration:none;border:1px solid var(--accent);padding:12px 22px;letter-spacing:.1em;text-transform:uppercase;transition:background .2s,color .2s}
+        .about-cv-btn:hover{background:var(--accent);color:var(--bg)}
+        .edu-item{display:flex;gap:16px;align-items:flex-start;margin-bottom:22px}
+        .edu-icon{width:38px;height:38px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--accent);flex-shrink:0;font-size:.82rem}
+        .edu-title{font-family:var(--display);font-weight:700;font-size:.95rem;color:var(--white);margin-bottom:2px}
+        .edu-school{font-family:var(--mono);font-size:.7rem;color:var(--accent);margin-bottom:2px}
+        .edu-date{font-family:var(--mono);font-size:.63rem;color:var(--muted)}
+        .timeline{position:relative;padding-left:24px}
+        .timeline::before{content:'';position:absolute;left:0;top:8px;bottom:0;width:1px;background:linear-gradient(to bottom,var(--accent),transparent)}
+        .timeline-item{position:relative;margin-bottom:40px;padding-left:28px}
+        .timeline-item::before{content:'';position:absolute;left:-28px;top:8px;width:8px;height:8px;background:var(--accent);border-radius:50%;box-shadow:0 0 10px var(--accent)}
+        .tl-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;flex-wrap:wrap;gap:8px}
+        .tl-title{font-family:var(--display);font-weight:700;font-size:.93rem;color:var(--white)}
+        .tl-date{font-family:var(--mono);font-size:.63rem;color:var(--bg);background:var(--accent);padding:3px 10px;letter-spacing:.08em}
+        .tl-company{font-family:var(--mono);font-size:.7rem;color:var(--accent);margin-bottom:6px}
+        .tl-desc{font-size:.86rem;color:var(--muted);line-height:1.6;margin-bottom:9px}
+        .tl-tags{display:flex;flex-wrap:wrap;gap:6px}
+        .tl-tags span{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;padding:3px 8px;border:1px solid var(--border);color:var(--muted);text-transform:uppercase}
+
+        /* SKILLS */
+        #competences{background:var(--bg)}
+        .skills-layout{display:grid;grid-template-columns:1fr 1fr;gap:60px}
+        .skills-block h3{font-family:var(--display);font-size:1.05rem;font-weight:700;color:var(--white);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+        .skills-block h3::after{content:'';flex:1;height:1px;background:var(--border)}
+        .skill-row{margin-bottom:22px}
+        .skill-row-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:10px}
+        .skill-row-name{font-family:var(--mono);font-size:.76rem;color:var(--text)}
+        .skill-row-tools{font-family:var(--mono);font-size:.6rem;color:var(--muted);text-align:right;line-height:1.5;max-width:230px}
+        .skill-bar-track{height:2px;background:var(--border)}
+        .skill-bar-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--green));transition:width 1.6s var(--ease)}
+        .lang-grid{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+        .lang-item{display:flex;justify-content:space-between;align-items:center;padding:9px 13px;border:1px solid var(--border)}
+        .lang-name{font-family:var(--mono);font-size:.76rem;color:var(--text)}
+        .lang-level{font-family:var(--mono);font-size:.62rem;color:var(--accent);background:rgba(79,195,247,.1);padding:3px 9px;letter-spacing:.08em;text-transform:uppercase}
+        .soft-grid{display:flex;flex-wrap:wrap;gap:9px}
+        .soft-pill{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;padding:8px 14px;border:1px solid var(--border);color:var(--text);text-transform:uppercase;position:relative;overflow:hidden;cursor:default;transition:border-color .2s,color .2s}
+        .soft-pill::before{content:'';position:absolute;inset:0;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .3s var(--ease);z-index:0}
+        .soft-pill:hover::before{transform:scaleX(1)}
+        .soft-pill:hover{color:var(--bg);border-color:var(--accent)}
+        .soft-pill span{position:relative;z-index:1}
+
+        /* PROJECTS */
+        #projects{background:var(--bg2)}
+        .projects-list{display:flex;flex-direction:column;gap:2px}
+        .project-item{display:grid;grid-template-columns:90px 1fr auto;align-items:center;gap:32px;padding:28px 32px;border:1px solid var(--border);background:var(--surface);transition:border-color .2s,background .2s;position:relative;overflow:hidden;text-decoration:none;color:inherit}
+        .project-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);transform:scaleY(0);transform-origin:bottom;transition:transform .35s var(--ease)}
+        .project-item:hover{border-color:var(--accent);background:rgba(79,195,247,.02)}
+        .project-item:hover::before{transform:scaleY(1)}
+        .project-num{font-family:var(--display);font-size:2rem;font-weight:800;color:var(--border);line-height:1;transition:color .3s}
+        .project-item:hover .project-num{color:var(--accent)}
+        .project-body{min-width:0}
+        .project-title{font-family:var(--display);font-size:1.05rem;font-weight:700;color:var(--white);margin-bottom:4px}
+        .project-desc{font-size:.85rem;color:var(--muted);line-height:1.55;margin-bottom:9px}
+        .project-tags{display:flex;flex-wrap:wrap;gap:6px}
+        .project-tags span{font-family:var(--mono);font-size:.58rem;letter-spacing:.09em;padding:3px 7px;background:rgba(79,195,247,.07);color:var(--accent);text-transform:uppercase}
+        .project-tags span.green{background:rgba(105,255,138,.07);color:var(--green)}
+        .project-tags span.orange{background:rgba(255,171,64,.07);color:var(--orange)}
+        .project-arrow{font-size:.82rem;color:var(--muted);transition:color .2s,transform .2s;flex-shrink:0}
+        .project-item:hover .project-arrow{color:var(--accent);transform:translateX(4px)}
+
+        /* CONTACT */
+        #contact{background:var(--bg)}
+        .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+        .contact-left h3{font-family:var(--display);font-size:1.85rem;font-weight:800;color:var(--white);line-height:1.2;margin-bottom:14px}
+        .contact-left h3 em{color:var(--accent);font-style:normal}
+        .contact-left>p{font-size:.93rem;color:var(--muted);line-height:1.75;margin-bottom:34px}
+        .contact-details{display:flex;flex-direction:column;gap:14px}
+        .contact-row{display:flex;align-items:center;gap:15px}
+        .contact-ico{width:38px;height:38px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:.8rem;flex-shrink:0}
+        .c-label{font-family:var(--mono);font-size:.6rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:1px}
+        .c-val{font-size:.9rem;color:var(--text)}
+        .contact-form{display:flex;flex-direction:column;gap:16px}
+        .form-field{display:flex;flex-direction:column;gap:6px}
+        .form-label{font-family:var(--mono);font-size:.63rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase}
+        .form-input{background:var(--surface);border:1px solid var(--border);color:var(--white);padding:12px 15px;font-family:var(--body);font-size:.9rem;transition:border-color .2s;outline:none;resize:none}
+        .form-input:focus{border-color:var(--accent)}
+        .form-input::placeholder{color:var(--muted)}
+        .form-submit{font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;padding:14px 28px;background:var(--accent);color:var(--bg);border:none;font-weight:700;cursor:pointer;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));transition:background .2s;align-self:flex-start}
+        .form-submit:hover{background:var(--green)}
+
+        /* FOOTER */
+        footer{background:var(--bg2);border-top:1px solid var(--border);padding:34px 60px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+        .footer-logo{font-family:var(--mono);font-size:.8rem;color:var(--accent);text-decoration:none}
+        .footer-copy{font-family:var(--mono);font-size:.63rem;color:var(--muted);letter-spacing:.08em}
+        .footer-socials{display:flex;gap:16px}
+        .footer-socials a{color:var(--muted);transition:color .2s;font-size:.86rem}
+        .footer-socials a:hover{color:var(--accent)}
+
+        /* REVEAL */
+        .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+        .reveal.visible{opacity:1;transform:none}
+
+        /* RESPONSIVE */
+        @media(max-width:900px){
+            section{padding:80px 24px}
+            nav{padding:20px 24px}
+            #home{padding:0 24px}
+            .hero-inner{grid-template-columns:1fr}
+            .hero-card{display:none}
+            .about-grid,.skills-layout,.contact-grid{grid-template-columns:1fr;gap:52px}
+            .project-item{grid-template-columns:60px 1fr}
+            .project-arrow{display:none}
+            .nav-links{position:fixed;top:0;right:-100%;height:100vh;width:260px;background:var(--surface);flex-direction:column;justify-content:center;align-items:center;gap:32px;border-left:1px solid var(--border);transition:right .3s var(--ease);z-index:700}
+            .nav-links.open{right:0}
+            .hamburger{display:flex;z-index:900}
+            footer{flex-direction:column;text-align:center}
+            .bracket,.scroll-hint{display:none}
+        }
+        @media(max-width:576px){.hero-name{font-size:2.5rem}.project-item{grid-template-columns:1fr}.project-num{display:none}}
+    </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="nav">
+    <a href="#home" class="nav-logo"><span>~/</span>ait-abdelaali</a>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+    <ul class="nav-links" id="navLinks">
+        <li><a href="#about">Parcours</a></li>
+        <li><a href="#competences">Skills</a></li>
+        <li><a href="#projects">Projets</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+    <div class="grid-bg"></div>
+    <div class="hero-glow"></div>
+    <div class="bracket bracket-tl"></div>
+    <div class="bracket bracket-br"></div>
+
+    <div class="hero-inner">
+        <div>
+            <div class="hero-label reveal">Apprenti Technicien Réseau &amp; Cybersécurité</div>
+            <h1 class="hero-name reveal" style="transition-delay:.08s">
+                Ayoub
+                <span class="outline">AIT ABDELAALI</span>
+            </h1>
+            <p class="hero-role reveal" style="transition-delay:.16s">
+                <span class="typing-text" id="typingEl">_</span>
+            </p>
+            <p class="hero-bio reveal" style="transition-delay:.22s">
+                Étudiant en <strong>BUT Réseaux &amp; Télécommunications</strong> à l'IUT Sorbonne Paris Nord.
+                Passionné par la cybersécurité offensive et défensive, je recherche un
+                <strong>contrat d'apprentissage de 2 ans</strong> à partir de septembre 2026
+                (rythme 2 sem. entreprise / 2 sem. école).
+            </p>
+            <div class="hero-actions reveal" style="transition-delay:.30s">
+                <a href="#projects" class="btn-primary">Voir mes projets</a>
+                <a href="./assets/CV_alternance_Ayoub.pdf" class="btn-ghost" target="_blank">
+                    <i class="fas fa-file-pdf"></i>&nbsp;CV PDF
+                </a>
+            </div>
+        </div>
+
+        <!-- Status card -->
+        <div class="hero-card reveal" style="transition-delay:.18s">
+            <div class="card-label">// Profil actuel</div>
+            <div class="card-status">
+                <div class="status-dot"></div>
+                <span class="status-text">En recherche d'alternance</span>
+            </div>
+            <div class="card-info">
+                <div class="card-row"><span class="card-key">Formation</span><span class="card-val accent">BUT R&T Cyber</span></div>
+                <div class="card-row"><span class="card-key">École</span><span class="card-val">IUT Villetaneuse</span></div>
+                <div class="card-row"><span class="card-key">Disponible</span><span class="card-val orange">Sept. 2026</span></div>
+                <div class="card-row"><span class="card-key">Rythme</span><span class="card-val">2 sem. / 2 sem.</span></div>
+                <div class="card-row"><span class="card-key">Localisation</span><span class="card-val">Stains — Île-de-France</span></div>
+                <div class="card-row"><span class="card-key">Anglais</span><span class="card-val accent">C1 — CLES</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="scroll-hint"><div class="scroll-line"></div>Scroll</div>
+</section>
+
+<!-- PARCOURS -->
+<section id="about">
+    <div class="section-header reveal">
+        <span class="section-num">01.</span>
+        <h2 class="section-title">Parcours</h2>
+        <div class="section-line"></div>
+    </div>
+    <div class="about-grid">
+        <div class="about-text reveal">
+            <p>Mon adaptabilité et ma rigueur constituent des atouts essentiels pour évoluer en permanence dans les meilleures conditions possibles. Grâce à une <strong>veille technologique constante</strong>, je reste informé des dernières innovations.</p>
+            <p>Mes projets académiques — pentest multi-cibles, application communicante sécurisée, expertise cybersécurité — m'ont permis de <strong>confronter la théorie à des cas concrets</strong> et de développer une approche méthodologique professionnelle.</p>
+            <p>Je vise les métiers offensifs (pentest, red team) et défensifs (SOC, architecture sécurité), en combinant <strong>compétences techniques pointues</strong> et rigueur documentaire.</p>
+
+            <div style="margin-top:34px">
+                <h3 style="font-family:var(--display);font-size:1.05rem;font-weight:700;color:var(--white);margin-bottom:18px;display:flex;align-items:center;gap:12px">Formation <span style="flex:1;height:1px;background:var(--border);display:block"></span></h3>
+                <div class="edu-item">
+                    <div class="edu-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <div>
+                        <div class="edu-title">BUT Réseaux &amp; Télécommunications</div>
+                        <div class="edu-school">IUT Sorbonne Paris Nord — Villetaneuse</div>
+                        <div class="edu-date">2024 → 2027 &nbsp;·&nbsp; Spécialité Cybersécurité</div>
+                    </div>
+                </div>
+                <div class="edu-item">
+                    <div class="edu-icon"><i class="fas fa-school"></i></div>
+                    <div>
+                        <div class="edu-title">BAC Général — Mathématiques &amp; Physique-Chimie</div>
+                        <div class="edu-school">Lycée Jean Baptiste de la Salle — Saint-Denis</div>
+                        <div class="edu-date">2023 → 2024</div>
+                    </div>
+                </div>
+            </div>
+            <a href="./assets/CV_alternance_Ayoub.pdf" class="about-cv-btn" target="_blank"><i class="fas fa-download"></i> Télécharger mon CV</a>
+        </div>
+
+        <div class="reveal" style="transition-delay:.12s">
+            <h3 style="font-family:var(--display);font-size:1.05rem;font-weight:700;color:var(--white);margin-bottom:24px;display:flex;align-items:center;gap:12px">Expériences <span style="flex:1;height:1px;background:var(--border);display:block"></span></h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="tl-meta"><span class="tl-title">Stagiaire Technicien</span><span class="tl-date">Avr – Mai 2021</span></div>
+                    <div class="tl-company">// Valéo — Cergy</div>
+                    <p class="tl-desc">Gestion du planning de tests, rédaction de comptes-rendus techniques, collaboration avec ingénieurs et techniciens. Initiation aux procédures qualité et de sécurité industrielle.</p>
+                    <div class="tl-tags"><span>Documentation</span><span>Travail en équipe</span><span>Qualité</span></div>
+                </div>
+                <div class="timeline-item">
+                    <div class="tl-meta"><span class="tl-title">Audit de sécurité &amp; Pentesting</span><span class="tl-date">Jan. 2026</span></div>
+                    <div class="tl-company">// IUT Villetaneuse — Module Ethical Hacking</div>
+                    <p class="tl-desc">Audit complet sur 3 cibles : exploitation MS08-067 (CVSS 10.0), backdoor vsftpd, bypass AMSI + déploiement C2 Sliver sur Windows 11. Post-exploitation, credential dumping et anti-forensics.</p>
+                    <div class="tl-tags"><span>Metasploit</span><span>Nessus</span><span>AMSI Bypass</span><span>C2 Sliver</span></div>
+                </div>
+                <div class="timeline-item">
+                    <div class="tl-meta"><span class="tl-title">SAÉ 3.02 — Messagerie chiffrée</span><span class="tl-date">2025–2026</span></div>
+                    <div class="tl-company">// IUT Villetaneuse — Équipe de 5</div>
+                    <p class="tl-desc">Application Python complète : FastAPI TCP/HTTP (auth), UDP+Fernet AES-128 (temps réel), WebRTC P2P (visio), groupes 50 participants, persistance Supabase/PostgreSQL.</p>
+                    <div class="tl-tags"><span>Python</span><span>FastAPI</span><span>Fernet</span><span>WebRTC</span><span>PostgreSQL</span></div>
+                </div>
+                <div class="timeline-item">
+                    <div class="tl-meta"><span class="tl-title">Mission 5 — Expertise Cybersécurité ASP</span><span class="tl-date">Jan. 2026</span></div>
+                    <div class="tl-company">// IUT Villetaneuse — Module réseau sécurisé</div>
+                    <p class="tl-desc">Mémoire technique pour l'Agence de Services et de Paiement : threat modeling STRIDE, DevSecOps CI/CD, checklists OWASP/CIS, livrables contractuels et modèle économique UO.</p>
+                    <div class="tl-tags"><span>STRIDE</span><span>DevSecOps</span><span>OWASP</span><span>ISO 27001</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- COMPETENCES -->
+<section id="competences">
+    <div class="section-header reveal">
+        <span class="section-num">02.</span>
+        <h2 class="section-title">Compétences</h2>
+        <div class="section-line"></div>
+    </div>
+    <div class="skills-layout">
+        <div class="reveal">
+            <div class="skills-block">
+                <h3>Réseaux &amp; Systèmes</h3>
+                <div class="skill-row">
+                    <div class="skill-row-header"><span class="skill-row-name">Protocoles TCP/IP — Modèle OSI</span><span class="skill-row-tools">DHCP · DNS · VLAN · IPv4/6</span></div>
+                    <div class="skill-bar-track"><div class="skill-bar-fill" data-w="82"></div></div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-row-header"><span class="skill-row-name">Équipements Cisco</span><span class="skill-row-tools">Routing · Switching · ACL · Packet Tracer</span></div>
+                    <div class="skill-bar-track"><div class="skill-bar-fill" data-w="74"></div></div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-row-header"><span class="skill-row-name">Téléphonie IP — VoIP</span><span class="skill-row-tools">PABX/IPBX · SIP · Asterisk · Eavesdropping</span></div>
+                    <div class="skill-bar-track"><div class="skill-bar-fill" data-w="68"></div></div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-row-header"><span class="skill-row-name">Admin. Systèmes</span><span class="skill-row-tools">Linux CLI · Windows Server · Bash · SSH</span></div>
+                    <div class="skill-bar-track"><div class="skill-bar-fill" data-w="76"></div></div>
+                </div>
+            </div>
+            <div class="skills-block" style="margin-top:44px">
+                <h3>Cybersécurité</h3>
+                <div class="skill-row">
+                    <div class="skill-row-header"><span class="skill-row-name">Pentest &amp; Exploitation</span><span class="skill-row-tools">Metasploit · Nessus · Nmap · John the Ripper</span></div>
+                    <div class="skill-bar-track"><div class="skill-bar-fill" data-w="78"></div></div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-row-header"><span class="skill-row-name">Évasion &amp; C2</span><span class="skill-row-tools">AMSI Bypass · XOR Shellcode · Sliver · msfvenom</span></div>
+                    <div class="skill-bar-track"><div class="skill-bar-fill" data-w="64"></div></div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-row-header"><span class="skill-row-name">Analyse de risques</span><span class="skill-row-tools">CVSS · STRIDE · EBIOS RM · Firewall</span></div>
+                    <div class="skill-bar-track"><div class="skill-bar-fill" data-w="72"></div></div>
+                </div>
+                <div class="skill-row">
+                    <div class="skill-row-header"><span class="skill-row-name">Développement sécurisé</span><span class="skill-row-tools">Python · FastAPI · Fernet · OWASP · DevSecOps</span></div>
+                    <div class="skill-bar-track"><div class="skill-bar-fill" data-w="70"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="reveal" style="transition-delay:.14s">
+            <div class="skills-block">
+                <h3>Langues</h3>
+                <div class="lang-grid">
+                    <div class="lang-item"><span class="lang-name">Français</span><span class="lang-level">Langue maternelle</span></div>
+                    <div class="lang-item"><span class="lang-name">Anglais</span><span class="lang-level">C1 — Certif. CLES</span></div>
+                    <div class="lang-item"><span class="lang-name">Espagnol</span><span class="lang-level">A2</span></div>
+                </div>
+            </div>
+            <div class="skills-block" style="margin-top:44px">
+                <h3>Qualités &amp; Outils</h3>
+                <div class="soft-grid">
+                    <div class="soft-pill"><span>Sociable</span></div>
+                    <div class="soft-pill"><span>Autonome</span></div>
+                    <div class="soft-pill"><span>Minutieux</span></div>
+                    <div class="soft-pill"><span>Curieux</span></div>
+                    <div class="soft-pill"><span>Adaptabilité</span></div>
+                    <div class="soft-pill"><span>Travail en équipe</span></div>
+                    <div class="soft-pill"><span>Git / GitLab</span></div>
+                    <div class="soft-pill"><span>Python</span></div>
+                    <div class="soft-pill"><span>SQL / Bash</span></div>
+                    <div class="soft-pill"><span>HTML / CSS</span></div>
+                    <div class="soft-pill"><span>Veille techno</span></div>
+                    <div class="soft-pill"><span>Documentation</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PROJETS -->
+<section id="projects">
+    <div class="section-header reveal">
+        <span class="section-num">03.</span>
+        <h2 class="section-title">Projets</h2>
+        <div class="section-line"></div>
+    </div>
+    <div class="projects-list">
+
+        <a href="./assets/Rapport_Pentesting.pdf" target="_blank" class="project-item reveal">
+            <div class="project-num">01</div>
+            <div class="project-body">
+                <div class="project-title">Audit de sécurité &amp; Pentesting — 3 cibles</div>
+                <p class="project-desc">Infrastructure virtualisée complète : Windows XP (MS08-067, CVSS 10.0, credential dumping via hashdump), Metasploitable 2 (vsftpd backdoor, NFS world-readable, Samba Badlock), Windows 11 (bypass AMSI, XOR obfuscation, C2 Sliver). Post-exploitation et rapport structuré.</p>
+                <div class="project-tags">
+                    <span>Metasploit</span><span>Nessus</span><span>John the Ripper</span>
+                    <span class="orange">AMSI Bypass</span><span class="orange">C2 Sliver</span>
+                    <span class="green">CVSS Scoring</span><span class="green">Remédiation</span>
+                </div>
+            </div>
+            <i class="fas fa-arrow-right project-arrow"></i>
+        </a>
+
+        <a href="./assets/SAE3_02-Doc_technique.pdf" target="_blank" class="project-item reveal" style="transition-delay:.05s">
+            <div class="project-num">02</div>
+            <div class="project-body">
+                <div class="project-title">CyberChat — Messagerie instantanée chiffrée</div>
+                <p class="project-desc">Architecture hybride TCP/UDP en Python. FastAPI (port 7860) pour l'auth, UDP (port 5005) + Fernet AES-128 pour les échanges en temps réel, WebRTC P2P pour la visioconférence, transfert de fichiers par chunking 64KB, groupes de 50 participants, persistance PostgreSQL/Supabase avec RLS.</p>
+                <div class="project-tags">
+                    <span>Python</span><span>FastAPI</span><span>UDP Sockets</span>
+                    <span class="green">Fernet AES-128</span><span class="green">WebRTC</span>
+                    <span>React TypeScript</span><span>PostgreSQL</span>
+                </div>
+            </div>
+            <i class="fas fa-arrow-right project-arrow"></i>
+        </a>
+
+        <a href="./assets/Livrable_Mission5.pdf" target="_blank" class="project-item reveal" style="transition-delay:.1s">
+            <div class="project-num">03</div>
+            <div class="project-body">
+                <div class="project-title">Mission 5 — Expertise Cybersécurité ASP</div>
+                <p class="project-desc">Mémoire technique complet pour le marché MP24-16 de l'Agence de Services et de Paiement : threat modeling STRIDE, DevSecOps CI/CD sécurisé (SAST/SCA/secrets), checklists OWASP, matrice RACI, modèle de maturité, livrables contractuels et bordereau de prix.</p>
+                <div class="project-tags">
+                    <span>STRIDE</span><span>DevSecOps</span><span>OWASP</span>
+                    <span class="orange">ISO 27001</span><span class="orange">NIS2</span>
+                    <span>CI/CD Quality Gates</span><span>Matrice RACI</span>
+                </div>
+            </div>
+            <i class="fas fa-arrow-right project-arrow"></i>
+        </a>
+
+        <div class="project-item reveal" style="transition-delay:.15s; cursor:default">
+            <div class="project-num">04</div>
+            <div class="project-body">
+                <div class="project-title">Réseau optique WDM — Topologie anneau</div>
+                <p class="project-desc">Mise en œuvre d'un réseau WDM en topologie anneau. Configuration de modules OADM pour l'insertion et l'extraction de longueurs d'onde. Mesure et analyse des performances du signal : BER et OSNR.</p>
+                <div class="project-tags">
+                    <span>WDM</span><span>OADM</span><span>BER</span><span>OSNR</span><span>Topologie anneau</span>
+                </div>
+            </div>
+            <i class="fas fa-arrow-right project-arrow"></i>
+        </div>
+
+    </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+    <div class="section-header reveal">
+        <span class="section-num">04.</span>
+        <h2 class="section-title">Contact</h2>
+        <div class="section-line"></div>
+    </div>
+    <div class="contact-grid">
+        <div class="contact-left reveal">
+            <h3>Parlons de<br><em>votre projet.</em></h3>
+            <p>Disponible pour un contrat d'apprentissage à partir de septembre 2026. Ouvert à toute opportunité en réseau, cybersécurité offensive ou défensive, et développement sécurisé.</p>
+            <div class="contact-details">
+                <div class="contact-row">
+                    <div class="contact-ico"><i class="fas fa-envelope"></i></div>
+                    <div><div class="c-label">Email</div><div class="c-val">aitabdelaaliayoub5@gmail.com</div></div>
+                </div>
+                <div class="contact-row">
+                    <div class="contact-ico"><i class="fas fa-phone"></i></div>
+                    <div><div class="c-label">Téléphone</div><div class="c-val">+33 6 95 69 98 91</div></div>
+                </div>
+                <div class="contact-row">
+                    <div class="contact-ico"><i class="fas fa-map-marker-alt"></i></div>
+                    <div><div class="c-label">Localisation</div><div class="c-val">Stains — Île-de-France</div></div>
+                </div>
+                <div class="contact-row">
+                    <div class="contact-ico"><i class="fab fa-linkedin-in"></i></div>
+                    <div><div class="c-label">LinkedIn</div><div class="c-val">linkedin.com/in/ayoub-ait-abdelaali</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="contact-form reveal" style="transition-delay:.14s">
+            <div class="form-field"><label class="form-label" for="cn">Nom</label><input class="form-input" type="text" id="cn" placeholder="Jean Dupont"></div>
+            <div class="form-field"><label class="form-label" for="ce">Email</label><input class="form-input" type="email" id="ce" placeholder="recruteur@entreprise.fr"></div>
+            <div class="form-field"><label class="form-label" for="cs">Sujet</label><input class="form-input" type="text" id="cs" placeholder="Proposition d'alternance"></div>
+            <div class="form-field"><label class="form-label" for="cm">Message</label><textarea class="form-input" id="cm" rows="5" placeholder="Votre message…"></textarea></div>
+            <button class="form-submit" onclick="handleSubmit()">Envoyer &nbsp;<i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <a href="#home" class="footer-logo">~/ait-abdelaali</a>
+    <span class="footer-copy">&copy; 2026 — Ayoub Ait Abdelaali. Tous droits réservés.</span>
+    <div class="footer-socials">
+        <a href="https://www.linkedin.com/in/ayoub-ait-abdelaali/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+        <a href="mailto:aitabdelaaliayoub5@gmail.com"><i class="fas fa-envelope"></i></a>
+    </div>
+</footer>
+
+<script>
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+(function a(){rx+=(mx-rx)*.18;ry+=(my-ry)*.18;cursor.style.left=mx+'px';cursor.style.top=my+'px';ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a)})();
+document.querySelectorAll('a,button,.soft-pill,.project-item').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cursor.style.width='18px';cursor.style.height='18px';ring.style.width='56px';ring.style.height='56px'});
+    el.addEventListener('mouseleave',()=>{cursor.style.width='10px';cursor.style.height='10px';ring.style.width='36px';ring.style.height='36px'});
+});
+
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>40));
+
+const hb=document.getElementById('hamburger'),nl=document.getElementById('navLinks');
+hb.addEventListener('click',()=>nl.classList.toggle('open'));
+nl.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nl.classList.remove('open')));
+
+const roles=['Pentest & Ethical Hacking_','Sécurité Réseau_','Développement Sécurisé_','Alternance Sept. 2026_'];
+let ri=0,ci=0,del=false;
+const tel=document.getElementById('typingEl');
+function type(){const w=roles[ri];if(!del){tel.textContent=w.slice(0,++ci);if(ci===w.length){del=true;setTimeout(type,1800);return;}}else{tel.textContent=w.slice(0,--ci);if(ci===0){del=false;ri=(ri+1)%roles.length;}}setTimeout(type,del?55:85);}
+type();
+
+const revEls=document.querySelectorAll('.reveal');
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.1});
+revEls.forEach(el=>obs.observe(el));
+
+const bars=document.querySelectorAll('.skill-bar-fill');
+const bObs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.style.width=e.target.dataset.w+'%';bObs.unobserve(e.target);}}),{threshold:.3});
+bars.forEach(b=>bObs.observe(b));
+
+function handleSubmit(){const n=document.getElementById('cn').value;if(!n.trim()){alert('Merci de renseigner votre nom.');return;}alert('Message envoyé ! Merci '+n+', je vous répondrai rapidement.');['cn','ce','cs','cm'].forEach(id=>document.getElementById(id).value='');}
+</script>
+</body>
+</html>
